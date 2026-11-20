@@ -367,4 +367,30 @@ mod test {
         assert_eq!(gas.saturating_div(rhs), NearGas::from_gas(5));
         assert_eq!(gas.saturating_div(another_gas), NearGas::from_gas(0));
     }
+
+    #[test]
+    fn whole_unit_constructors_accept_the_largest_amount_that_fits() {
+        assert_eq!(
+            NearGas::from_tgas(u64::MAX / 10u64.pow(12)).as_gas(),
+            u64::MAX / 10u64.pow(12) * 10u64.pow(12)
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_pgas_panics_on_overflow() {
+        NearGas::from_pgas(std::hint::black_box(u64::MAX / 10u64.pow(15) + 1));
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_tgas_panics_on_overflow() {
+        NearGas::from_tgas(std::hint::black_box(u64::MAX / 10u64.pow(12) + 1));
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_ggas_panics_on_overflow() {
+        NearGas::from_ggas(std::hint::black_box(u64::MAX / 10u64.pow(9) + 1));
+    }
 }
