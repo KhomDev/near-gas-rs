@@ -28,6 +28,15 @@ mod test {
     use crate::{DecimalNumberParsingError, NearGas, NearGasError};
 
     #[test]
+    fn test_from_str_leading_whitespace() {
+        assert_eq!(NearGas::from_str(" 5 TGas").unwrap(), NearGas::from_tgas(5));
+        assert_eq!(
+            NearGas::from_str("  1.5 TGas").unwrap(),
+            NearGas::from_ggas(1500)
+        );
+    }
+
+    #[test]
     fn doubledot() {
         let data = "1.1.1 TeraGas";
         let gas: Result<NearGas, NearGasError> = FromStr::from_str(data);
